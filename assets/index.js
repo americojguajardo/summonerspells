@@ -9,6 +9,8 @@ const images = {
   ignite: require('./ignite.png'),
   smite: require('./smite.png'),
   teleport: require('./teleport.png'),
+  rune: require('./rune.png'),
+  boots: require('./boots.png'),
 };
 
 export default images;

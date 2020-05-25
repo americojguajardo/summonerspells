@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, Alert, Vibration, TouchableWithoutFeedback } from 'react-native';
 import Images from '../assets/index';
 import Config from '../config';
-import { Audio } from 'expo-av';
+import CheckBox from '@react-native-community/checkbox';
+
 
 const Lane = (props) => {
   const [summoner1, setSummoner1] = useState(props.firstSummoner);
@@ -13,6 +14,8 @@ const Lane = (props) => {
   const [timerRunning2, setTimerRunning2] = useState(false);
   const [timer1, setTimer1] = useState(0);
   const [timer2, setTimer2] = useState(0);
+  const [toggleRune, setToggleRune] = useState(false)
+  const [toggleBoots, setToggleBoots] = useState(false)
 
 
   useEffect(() => {
@@ -37,7 +40,7 @@ const Lane = (props) => {
     }
     return () => clearInterval(interval);
   }, [timerRunning1, timer1]);
-  
+
   useEffect(() => {
     let interval = null;
     if (timer2 <= 0) {
@@ -86,7 +89,14 @@ const Lane = (props) => {
         setTimer1(0);
       } else {
         setTimerRunning1(true);
-        setTimer1(Config[summonerToTime]);
+        let modifier = 1;
+        if (toggleBoots) {
+          modifier = modifier - .1;
+        }
+        if (toggleRune) {
+          modifier = modifier - .05;
+        }
+        setTimer1(Config[summonerToTime]*modifier);
       }
     }
     if (number === 2) {
@@ -95,7 +105,14 @@ const Lane = (props) => {
         setTimerRunning2(false);
       } else {
         setTimerRunning2(true);
-        setTimer2(Config[summonerToTime]);
+        let modifier = 1;
+        if (toggleBoots) {
+          modifier = modifier - .1;
+        }
+        if (toggleRune) {
+          modifier = modifier - .05;
+        }
+        setTimer2(Config[summonerToTime]*modifier);
       }
     }
   }
@@ -154,32 +171,58 @@ const Lane = (props) => {
         </TouchableWithoutFeedback>
       </Modal>
 
-      <Text>{props.lane}</Text>
-      <View style={styles.images}>
-        <TouchableOpacity onPress={() => { touched(1, summoner1) }}>
-          <View style={styles.image}>
-            {timerRunning1 &&
-              <View style={styles.imageHover}>
-                <Text style={styles.hoverText}>{timer1}</Text>
-              </View>
-            }
-            <Image
-              source={Images[summoner1]}
+      <View style={styles.laneTitleContainer}>
+        <Text style={styles.laneTitle}>{props.lane}</Text>
+      </View>
+      <View style={styles.lane}>
+        <View style={styles.modifiers}>
+          <View>
+            <Image style={styles.boots}
+              source={Images.boots}
+            />
+            <CheckBox
+              disabled={false}
+              value={toggleBoots}
+              onValueChange={() => toggleBoots ? setToggleBoots(false) : setToggleBoots(true)}
             />
           </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => { touched(2, summoner2) }}>
-          <View style={styles.image}>
-            {timerRunning2 &&
-              <View style={styles.imageHover}>
-                <Text style={styles.hoverText}>{timer2}</Text>
-              </View>
-            }
-            <Image
-              source={Images[summoner2]}
+          <View>
+            <Image style={styles.rune}
+              source={Images.rune}
+            />
+            <CheckBox
+              disabled={false}
+              value={toggleRune}
+              onValueChange={() => toggleRune ? setToggleRune(false) : setToggleRune(true)}
             />
           </View>
-        </TouchableOpacity>
+        </View>
+        <View style={styles.images}>
+          <TouchableOpacity onPress={() => { touched(1, summoner1) }}>
+            <View style={styles.image}>
+              {timerRunning1 &&
+                <View style={styles.imageHover}>
+                  <Text style={styles.hoverText}>{timer1}</Text>
+                </View>
+              }
+              <Image
+                source={Images[summoner1]}
+              />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => { touched(2, summoner2) }}>
+            <View style={styles.image}>
+              {timerRunning2 &&
+                <View style={styles.imageHover}>
+                  <Text style={styles.hoverText}>{timer2}</Text>
+                </View>
+              }
+              <Image
+                source={Images[summoner2]}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
 
@@ -238,6 +281,26 @@ const styles = StyleSheet.create({
   },
   modalImg: {
     margin: 5
+  },
+  laneTitle: {
+    fontSize: 14
+  },
+  lane: {
+    flexDirection: 'row',
+    justifyContent: 'space-around'
+  },
+  rune: {
+    width: 30,
+    height: 30,
+    resizeMode: 'contain'
+  },
+  boots: {
+    width: 30,
+    height: 30,
+    resizeMode: 'contain'
+  },
+  modifiers: {
+    flexDirection: 'row'
   }
 });
 
