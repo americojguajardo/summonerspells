@@ -11,22 +11,49 @@ const Lane = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [timerRunning1, setTimerRunning1] = useState(false);
   const [timerRunning2, setTimerRunning2] = useState(false);
-  const [timer1, setTimer1] = useState();
-  const [timer2, setTimer2] = useState();
+  const [timer1, setTimer1] = useState(0);
+  const [timer2, setTimer2] = useState(0);
 
 
   useEffect(() => {
     setTimerRunning1(false);
+    setTimer1(0);
     setTimerRunning2(false);
+    setTimer2(0);
   }, [props.isTimer]);
 
-  // useEffect(() => {
-  //   timer1 > 0 ? setTimeout(() => setTimer1(timer1 - 1), 1000) : endTimer1();
-  // }, [timer1]);
+  useEffect(() => {
+    let interval = null;
+    if (timer1 <= 0) {
+      clearInterval(interval);
+      endTimer1();
+    }
+    if (timerRunning1) {
+      interval = setInterval(() => {
+        setTimer1(timer1 => timer1 - 1);
+      }, 1000);
+    } else {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [timerRunning1, timer1]);
+  
+  useEffect(() => {
+    let interval = null;
+    if (timer2 <= 0) {
+      clearInterval(interval);
+      endTimer2();
+    }
+    if (timerRunning2) {
+      interval = setInterval(() => {
+        setTimer2(timer2 => timer2 - 1);
+      }, 1000);
+    } else {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [timerRunning2, timer2]);
 
-  // useEffect(() => {
-  //   timer2 > 0 ? setTimeout(() => setTimer2(timer2 - 1), 1000) : endTimer2();
-  // }, [timer2]);
 
 
   const touched = (number, summoner) => {
@@ -85,7 +112,6 @@ const Lane = (props) => {
 
   return (
     <View style={styles.screen}>
-      <Text>{timer1}</Text>
       <Modal transparent={true} visible={modalVisible} onRequestClose={() => { setModalVisible(false); }}>
         <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
           <View style={styles.screen}>
