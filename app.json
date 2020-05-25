@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "summoners2",
-    "slug": "summoners2",
+    "name": "Summoner Spells timer",
+    "slug": "summoner-spells-timer",
     "platforms": [
       "ios",
       "android",
@@ -23,6 +23,11 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "android": {
+      "package": "com.americoguajardo.summonerspellstimer",
+      "versionCode": 1
+    },
+    "description": ""
   }
 }
